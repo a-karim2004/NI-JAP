@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NI-JAP — Platforme-PUB Anime Niamey 2026</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+
+<!--
+  ╔══════════════════════════════════════════════════════╗
+  ║         OTAKUNIAMEY — Guide des modifications        ║
+  ╠══════════════════════════════════════════════════════╣
+  ║  🎨 Couleurs      → section :root { }               ║
+  ║  📅 Date événement → JS : const EVENT_DATE          ║
+  ║  🗺️  Carte Maps    → <iframe src="...">             ║
+  ║  💬 Citations      → JS : const QUOTES = [...]      ║
+  ║  📧 Newsletter     → JS : handleNewsletter()        ║
+  ║  🏠 Nom du lieu    → texte dans #section-map        ║
+  ╚══════════════════════════════════════════════════════╝
+-->
+
+<!-- Google Fonts : Orbitron (titres) + Rajdhani (texte) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
+
+
+</head>
+<body>
+
+<!-- ════════════════════════════════════════
+     NAVIGATION
+     ════════════════════════════════════════ -->
+<nav id="mainNav">
+  <a href="#hero" class="logo">
+    <span class="logo-main">NI-JAP</span>
+    <span class="logo-sub">PLATFROME-PUB-ANIME · NIGER 2026</span>
+  </a>
+
+  <ul class="nav-links">
+    <li><a href="#section-countdown"><i class="fa-solid fa-hourglass"></i> Countdown</a></li>
+    <li><a href="#section-map"><i class="fa-solid fa-map-pin"></i> Lieu</a></li>
+    <li><a href="#section-quote"><i class="fa-solid fa-message"></i> Citation</a></li>
+    <li><a href="#section-newsletter"><i class="fa-solid fa-envelope"></i> Newsletter</a></li>
+  </ul>
+
+  <!-- Bouton hamburger (mobile) -->
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Menu mobile -->
+<nav class="mobile-nav" id="mobileNav">
+  <a href="#section-countdown" onclick="closeMobile()"><i class="fa-solid fa-hourglass"></i> Countdown</a>
+  <a href="#section-map"       onclick="closeMobile()"><i class="fa-solid fa-map-pin"></i> Lieu de l'événement</a>
+  <a href="#section-quote"     onclick="closeMobile()"><i class="fa-solid fa-message"></i> Citation du jour</a>
+  <a href="#section-newsletter"onclick="closeMobile()"><i class="fa-solid fa-envelope"></i>Newsletter</a>
+</nav>
+
+
+<main>
+
+  <!-- ════════════════════════════════════════
+       SECTION 1 — HERO
+       ════════════════════════════════════════ -->
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+
+    <div class="hero-content">
+      <div class="container">
+
+        <!-- Texte gauche -->
+        <div>
+          <div class="hero-eyebrow">
+            <span class="pulse-dot"></span>
+            Platforme-PUB · Niamey · 2026
+          </div>
+
+          <h1 class="hero-title">
+            <span class="t1">La première grande</span>
+            <span class="t2">Convention Nigth Otaku<br>de Niamey</span>
+          </h1>
+
+          <p class="hero-desc">
+            Anime, Manga, Cosplay, Gaming — tout ce que tu aimes réuni en un seul événement.
+            <strong>Rejoins des milliers de passionnés</strong> pour une journée inoubliable au Niger.
+          </p>
+
+          <div class="hero-btns">
+            <a href="#section-newsletter" class="btn btn-primary"><i class="fa-solid fa-money-bill"></i> Je m'inscris</a>
+            <a href="#section-countdown"  class="btn btn-outline"><i class="fa-solid fa-hourglass"></i> Countdown</a>
+          </div>
+        </div>
+
+        <!-- Carte visuelle droite -->
+        <div>
+          <div class="hero-card">
+            <!--
+              ⬇️ REMPLACE L'IMAGE ICI
+              Mets le chemin de ton affiche/image d'événement
+              Ex: src="affiche-convention.jpg"
+              Si tu n'as pas encore d'image, le placeholder s'affiche
+            -->
+           
+             <img src="nin.jpeg" alt="Convention OtakuNiamey 2026" class="hero-card-img"> 
+
+            <!-- <div class="hero-card-body">
+              <div class="hero-card-tag">Événement · Niamey Niger</div>
+              <div class="hero-card-title">Convention OtakuNiamey 2026</div>
+              <div class="hero-card-meta">
+                <span><i class="fa-regular fa-location-arrow"></i> Palais des Congrès</span>
+                <span><i class="fa-solid fa-star"></i> Entrée Libre</span>
+              </div>
+            </div> -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════
+       SECTION 2 — COMPTEUR À REBOURS
+       Comment ça marche :
+       - EVENT_DATE dans le JS définit la date cible
+       - setInterval recalcule chaque seconde
+       - L'animation "flip" se déclenche à chaque changement
+       ════════════════════════════════════════ -->
+  <section id="section-countdown">
+    <div class="container">
+      <div class="countdown-wrapper">
+
+        <div class="section-eyebrow">Compte à rebours</div>
+        <h2 class="section-title">
+          Plus que <span class="accent" id="daysOnly">—</span> jours<br>
+          avant la <span class="accent2">Convention !</span>
+        </h2>
+        <p class="section-desc">
+          Chaque seconde qui passe nous rapproche du plus grand événement otaku de Niamey.
+          Prépare ton cosplay, il est temps !
+        </p>
+
+        <!-- Blocs compteur — mis à jour par JS -->
+        <div class="countdown-grid" id="countdownGrid">
+          <div class="cd-block">
+            <div class="cd-digits">
+              <div class="cd-num" id="cd-days">00</div>
+            </div>
+            <div class="cd-label">jours</div>
+          </div>
+
+          <div class="cd-sep">:</div>
+
+          <div class="cd-block">
+            <div class="cd-digits">
+              <div class="cd-num" id="cd-hours">00</div>
+            </div>
+            <div class="cd-label">Heures</div>
+          </div>
+
+          <div class="cd-sep">:</div>
+
+          <div class="cd-block">
+            <div class="cd-digits">
+              <div class="cd-num" id="cd-minutes">00</div>
+            </div>
+            <div class="cd-label">Minutes</div>
+          </div>
+
+          <div class="cd-sep">:</div>
+
+          <div class="cd-block">
+            <div class="cd-digits">
+              <div class="cd-num" id="cd-seconds">00</div>
+            </div>
+            <div class="cd-label">Secondes</div>
+          </div>
+        </div>
+
+        <!-- Date de l'événement affichée sous le compteur -->
+        <div class="cd-date-info">
+          <i class="fa-solid fa-calendar-day"></i> Date de l'événement :
+          <strong id="eventDateDisplay">—</strong>
+        </div>
+
+        <br>
+        <a href="#section-newsletter" class="btn btn-primary" style="margin-top:1.5rem">
+          🎌 Être notifié de la date →
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════
+       SECTION 3 — LOCALISATION GOOGLE MAPS
+       Comment modifier la carte :
+       1. Va sur maps.google.com
+       2. Cherche le lieu exact
+       3. Clique ⋮ → Partager → Intégrer une carte
+       4. Copie le src de l'<iframe> et colle-le ci-dessous
+       ════════════════════════════════════════ -->
+  <section id="section-map">
+    <div class="container">
+
+      <div class="section-eyebrow" style="justify-content:left">Localisation</div>
+      <h2 class="section-title" style="margin-bottom:2.5rem">
+        Où se déroule<br>l'<span class="accent">événement</span> ?
+      </h2>
+
+      <div class="map-layout">
+
+        <!-- Infos à gauche -->
+        <div class="map-info">
+          <div class="map-info-title">
+            CCN-EX-CCFN<br>
+            <span>de Niamey</span>
+          </div>
+
+          <div class="map-detail">
+            <div class="map-icon"><i class="fa-solid fa-map"></i></div>
+            <div class="map-detail-body">
+              <div class="map-detail-label">Adresse</div>
+              <!--
+                ⬇️ MODIFIE L'ADRESSE ICI si le lieu change
+              -->
+              <div class="map-detail-value">CCN  de Niamey</div>
+              <div class="map-detail-sub">Avenue de la Mairie, Rue du Musée, Niamey, Niger</div>
+            </div>
+          </div>
+
+          <div class="map-detail">
+            <div class="map-icon"><i class="fa-solid fa-map-pin"></i></div>
+            <div class="map-detail-body">
+              <div class="map-detail-label">Date & Heure</div>
+              <!--
+                ⬇️ MODIFIE LA DATE AFFICHÉE ICI
+              -->
+              <div class="map-detail-value " id="mapEventDate ">Samedi 30 Mai 2026</div>
+              <div class="map-detail-sub">Ouverture des portes à 15h00</div>
+            </div>
+          </div>
+
+          <div class="map-detail">
+            <div class="map-icon"><i class="fa-solid fa-money-bill"></i></div>
+            <div class="map-detail-body">
+              <div class="map-detail-label">Entrée</div>
+              <div class="map-detail-value">Gratuite / Sur inscription</div>
+              <div class="map-detail-sub">Places limitées — Inscris-toi via la newsletter</div>
+            </div>
+          </div>
+
+          
+
+          <a href="https://maps.app.goo.gl/9AE8ZfCehCFDhctk7"
+             target="_blank" class="btn btn-primary" style="margin-top:1.5rem">
+            🗺️ Ouvrir dans Google Maps
+          </a>
+        </div>
+
+        <!-- Carte à droite -->
+         
+        <div class="map-iframe-wrap">
+         
+
+          <!--
+            ⬇️ REMPLACE CE src PAR TON IFRAME GOOGLE MAPS
+            
+            Pour obtenir l'iframe :
+            1. Ouvre maps.google.com
+            2. Cherche "Palais des Congrès Niamey"
+            3. Clique sur le lieu → "Partager" → "Intégrer une carte"
+            4. Copie uniquement la valeur de src="..."
+            
+            En attendant, voici les coordonnées du Palais des Congrès de Niamey :
+            Lat: 13.5137, Lng: 2.1098
+          -->
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2091.1446347666642!2d2.105937092994239!3d13.51216236556504!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x11d0757517aaaaab%3A0xd54952927f827ec6!2sCentre%20Culturel%20Franco-Nig%C3%A9rien!5e1!3m2!1sfr!2sne!4v1778838479367!5m2!1sfr!2sne" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Localisation Palais des Congrès de Niamey">
+          </iframe>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════
+       SECTION 4 — CITATION DU JOUR (grand)
+       Comment ça marche :
+       - dayOfYear = numéro du jour dans l'année (1-365)
+       - index = dayOfYear % QUOTES.length
+       - Même citation toute la journée, nouvelle le lendemain
+       - Le bouton "Suivante" permet de naviguer manuellement
+       ════════════════════════════════════════ -->
+  <section id="section-quote">
+    <div class="container">
+
+      <div class="section-eyebrow" style="justify-content:center">Sagesse Otaku</div>
+      <h2 class="section-title" style="text-align:center;margin-bottom:2.5rem">
+        Citation du <span class="accent">Jour</span>
+      </h2>
+
+      <div class="quote-card-big">
+        <div class="qcb-day" id="qcbDay">Jour — • —</div>
+        <div class="qcb-quote" id="qcbQuote">Chargement...</div>
+        <div class="qcb-author" id="qcbAuthor">—</div>
+        <div class="qcb-series" id="qcbSeries">—</div>
+
+        <div class="qcb-nav">
+          <button class="qcb-btn" onclick="prevQuote()">← Précédente</button>
+          <button class="qcb-btn" onclick="nextQuote()">Suivante →</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════
+       SECTION 5 — NEWSLETTER
+       Comment brancher un vrai service email :
+       
+       OPTION A — Mailchimp (gratuit jusqu'à 500 contacts)
+       1. Crée un compte sur mailchimp.com
+       2. Audience → Signup forms → Embedded forms
+       3. Remplace handleNewsletter() par le code Mailchimp
+       
+       OPTION B — EmailJS (envoie depuis le navigateur, gratuit)
+       1. Compte sur emailjs.com
+       2. npm install @emailjs/browser OU CDN
+       3. emailjs.send(serviceID, templateID, {email})
+       
+       OPTION C — Formspree (le plus simple, zéro backend)
+       1. Compte sur formspree.io
+       2. Change action du formulaire : <form action="https://formspree.io/f/TONID">
+       ════════════════════════════════════════ -->
+  <section id="section-newsletter">
+    <div class="container">
+
+      <div class="newsletter-box">
+
+        <span class="nl-icon"><i class="fa-solid fa-envelope"></i></span>
+
+        <div class="nl-counter">
+          <span><i class="fa-solid fa-fire" style="color:red"></i></span>
+          <strong id="nlCount">247</strong>
+          <span>otakus déjà inscrits</span>
+        </div>
+
+        <h2 class="nl-title">Reste dans la <span>boucle</span></h2>
+
+        <p class="nl-desc">
+          Reçois chaque semaine les dernières nouvelles sur la convention,
+          les activités, les guests invités et les surprises. Ne rate aucune info !
+        </p>
+
+        <!-- Chips décrivant ce que contient la newsletter -->
+        <div class="nl-chips">
+          <span class="nl-chip nl-chip-cyan"><i class="fa-solid fa-bell" style="color: rgb(228, 20, 20);"></i> Annonces event</span>
+          <span class="nl-chip nl-chip-magenta">🎭 Activités & Stands</span>
+          <span class="nl-chip nl-chip-violet"><i class="fa-solid fa-star" style="color: rgb(255, 212, 59);"></i> Guests spéciaux</span>
+        </div>
+
+        <!-- Formulaire -->
+        <div class="nl-form" id="nlForm">
+          <input
+            type="email"
+            id="nlEmail"
+            class="nl-input"
+            placeholder="ton.email@exemple.com"
+            autocomplete="email"
+            required
+          >
+          <button class="btn btn-primary nl-submit" onclick="handleNewsletter()">
+            S'inscrire ⚡
+          </button>
+        </div>
+
+        <!-- Message retour -->
+        <div class="nl-feedback" id="nlFeedback"></div>
+
+        <p class="nl-privacy">
+          🔒 Aucun spam. Désinscription en un clic. Données conservées au Niger.
+        </p>
+
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+
+<!-- ════════════════════════════════════════
+     BARRE CITATION DU JOUR (fixe en bas)
+     ════════════════════════════════════════ -->
+<div class="quote-bar" id="quoteBar">
+  <span class="quote-label">💬 Citation</span>
+  <span class="quote-text" id="quoteBarText">Chargement de la citation du jour...</span>
+  <span class="quote-author" id="quoteBarAuthor"></span>
+</div>
+
+
+<!-- ════════════════════════════════════════
+     JAVASCRIPT — Toute la logique ici
+     ════════════════════════════════════════ -->
+<script>
+
+/* ──────────────────────────────────────────
+   1. CONFIGURATION GÉNÉRALE
+   ⬇️ MODIFIE CES VALEURS POUR TON ÉVÉNEMENT
+   ────────────────────────────────────────── */
+
+/*
+  Date de l'événement au format : 'YYYY-MM-DDTHH:mm:ss'
+  Exemple : 15 août 2026 à 09h00
+  ⬇️ CHANGE CETTE DATE
+*/
+const EVENT_DATE = new Date('2026-05-30T00:00:00');
+
+/*
+  Texte affiché dans le bloc date sous le compteur
+  ⬇️ CHANGE CE TEXTE si tu changes la date
+*/
+document.getElementById('eventDateDisplay').textContent = 'Samedi 30 Mai 2026 — 15h00';
+
+
+/* ──────────────────────────────────────────
+   2. COMPTEUR À REBOURS
+   Logique : chaque seconde, calcule la diff
+   entre maintenant et EVENT_DATE
+   ────────────────────────────────────────── */
+
+// Mémorise les anciennes valeurs pour déclencher l'animation flip
+let prevValues = { days:'', hours:'', minutes:'', seconds:'' };
+
+function updateCountdown() {
+  const now  = new Date();
+  const diff = EVENT_DATE - now; // millisecondes restantes
+
+  // Événement passé
+  if (diff <= 0) {
+    document.getElementById('countdownGrid').innerHTML =
+      '<div class="cd-finished">🎌 L\'événement a eu lieu ! Merci à tous !</div>';
+    document.getElementById('daysOnly').textContent = '0';
+    clearInterval(countdownInterval);
+    return;
+  }
+
+  // Calcul des unités
+  const days    = Math.floor(diff / 86400000);
+  const hours   = Math.floor((diff % 86400000) / 3600000);
+  const minutes = Math.floor((diff % 3600000)  / 60000);
+  const seconds = Math.floor((diff % 60000)    / 1000);
+
+  // Formatage avec zéros
+  const pad  = (n, l=2) => String(n).padStart(l, '0');
+  const dStr = pad(days, 3);
+  const hStr = pad(hours);
+  const mStr = pad(minutes);
+  const sStr = pad(seconds);
+
+  // Mise à jour du titre "Plus que X jours"
+  document.getElementById('daysOnly').textContent = days;
+
+  // Mise à jour des blocs avec animation flip
+  updateBlock('cd-days',    dStr, prevValues.days);
+  updateBlock('cd-hours',   hStr, prevValues.hours);
+  updateBlock('cd-minutes', mStr, prevValues.minutes);
+  updateBlock('cd-seconds', sStr, prevValues.seconds);
+
+  prevValues = { days:dStr, hours:hStr, minutes:mStr, seconds:sStr };
+}
+
+/*
+  Animation flip : quand la valeur change,
+  le chiffre "tombe" et remonte avec la nouvelle valeur
+*/
+function updateBlock(id, newVal, oldVal) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (newVal === oldVal) return; // rien changé, pas d'animation
+
+  // Phase 1 : fait disparaître le chiffre
+  el.classList.add('flip');
+
+  setTimeout(() => {
+    el.textContent = newVal;
+    // Phase 2 : fait réapparaître avec la nouvelle valeur
+    el.classList.remove('flip');
+  }, 150);
+}
+
+// Lance le compteur immédiatement puis chaque seconde
+updateCountdown();
+const countdownInterval = setInterval(updateCountdown, 1000);
+
+
+/* ──────────────────────────────────────────
+   3. CITATIONS D'ANIME
+   
+   Comment ajouter une citation :
+   Ajoute un objet { q, a, s } dans le tableau :
+   - q = quote (la citation)
+   - a = author (personnage)
+   - s = series (nom de l'anime/manga)
+   ────────────────────────────────────────── */
+const QUOTES = [
+  {
+    q: "Je ne vais pas fuir. Parce que je veux vivre.",
+    a: "Mikasa Ackerman",
+    s: "Shingeki no Kyojin"
+  },
+  {
+    q: "Le vrai courage, c'est de continuer même quand tu sais que tu ne peux pas gagner.",
+    a: "Itachi Uchiha",
+    s: "Naruto"
+  },
+  {
+    q: "Si tu ne renonces pas, tu peux toujours t'en sortir.",
+    a: "Izuku Midoriya",
+    s: "Boku no Hero Academia"
+  },
+  {
+    q: "Les gens qui ne peuvent pas jeter quelque chose de précieux ne peuvent jamais espérer changer quoi que ce soit.",
+    a: "Armin Arlert",
+    s: "Shingeki no Kyojin"
+  },
+  {
+    q: "Quand tu penses que c'est la fin, ce n'est que le début.",
+    a: "Goku",
+    s: "Dragon Ball Z"
+  },
+  {
+    q: "Un rêve n'est qu'un rêve si tu ne te bats pas pour lui.",
+    a: "Monkey D. Luffy",
+    s: "One Piece"
+  },
+  {
+    q: "La douleur nous permet de grandir. Si tu ne ressens rien, tu ne peux rien ressentir du tout.",
+    a: "Pain / Nagato",
+    s: "Naruto Shippuden"
+  },
+  {
+    q: "Même si ton chemin est solitaire, avance. C'est ainsi que les légendes naissent.",
+    a: "Roronoa Zoro",
+    s: "One Piece"
+  },
+  {
+    q: "Tout ce qui est précieux dans ce monde a un prix. Tu dois choisir ce que tu es prêt à sacrifier.",
+    a: "Roy Mustang",
+    s: "Fullmetal Alchemist"
+  },
+  {
+    q: "La seule chose qui peut vaincre le pouvoir, c'est plus de pouvoir.",
+    a: "Megumin",
+    s: "KonoSuba"
+  },
+  {
+    q: "Si tu ne peux pas trouver de raison de vivre, tu peux en créer une.",
+    a: "Gintoki Sakata",
+    s: "Gintama"
+  },
+  {
+    q: "Un héros n'est pas défini par ses pouvoirs mais par ses actions.",
+    a: "All Might",
+    s: "Boku no Hero Academia"
+  },
+  {
+    q: "Peu importe ce que disent les autres, je réaliserai mon rêve.",
+    a: "Naruto Uzumaki",
+    s: "Naruto"
+  },
+  {
+    q: "Ce monde est cruel, et c'est pourquoi il est si beau.",
+    a: "Mikasa Ackerman",
+    s: "Shingeki no Kyojin"
+  },
+  {
+    q: "L'amitié ne dépend pas de la distance. Elle vit dans le cœur.",
+    a: "Taichi Yagami",
+    s: "Digimon Adventure"
+  },
+  {
+    q: "Je ne veux pas de monde sans chats.",
+    a: "Yoruichi Shihoin",
+    s: "Bleach"
+  },
+  {
+    q: "Une épée a deux tranchants. La haine et l'amour sont les deux faces d'une même passion.",
+    a: "Himura Kenshin",
+    s: "Rurouni Kenshin"
+  },
+  {
+    q: "Vous avez des ailes. Maintenant, volez.",
+    a: "Sasha Blouse",
+    s: "Shingeki no Kyojin"
+  },
+  {
+    q: "Si j'abandonne maintenant, ça n'aura servi à rien.",
+    a: "Tanjiro Kamado",
+    s: "Kimetsu no Yaiba"
+  },
+  {
+    q: "Le passé ne peut pas être changé, mais l'avenir est entre tes mains.",
+    a: "Light Yagami",
+    s: "Death Note"
+  },
+  {
+    q: "La force véritable ne vient pas des muscles, mais de la volonté.",
+    a: "Rock Lee",
+    s: "Naruto"
+  },
+  {
+    q: "Il n'y a pas de honte à tomber. La honte est de ne pas se relever.",
+    a: "Gildarts Clive",
+    s: "Fairy Tail"
+  },
+  {
+    q: "Tout le monde a ses limites. La question est de savoir jusqu'où tu es prêt à les repousser.",
+    a: "Isshiki Ōtsutsuki",
+    s: "Boruto"
+  },
+  {
+    q: "L'enfer, c'est juste un autre mot pour un endroit où on n'a pas encore grandi.",
+    a: "Osamu Dazai",
+    s: "Bungou Stray Dogs"
+  },
+  {
+    q: "Chaque être vivant mérite d'être respecté.",
+    a: "Rengoku Kyōjurō",
+    s: "Kimetsu no Yaiba"
+  },
+  {
+    q: "Protéger quelqu'un, c'est le plus grand acte de bravoure qui soit.",
+    a: "Erwin Smith",
+    s: "Shingeki no Kyojin"
+  },
+  {
+    q: "La faiblesse n'est pas un défaut. C'est ce qui nous pousse à progresser.",
+    a: "Rimuru Tempest",
+    s: "Tensei shitara Slime Datta Ken"
+  },
+  {
+    q: "Un sourire peut cacher mille larmes.",
+    a: "Usui Takumi",
+    s: "Kaichou wa Maid-sama"
+  },
+  {
+    q: "Si quelqu'un dit que rêver est inutile, je serai là pour lui prouver qu'il a tort.",
+    a: "Monkey D. Luffy",
+    s: "One Piece"
+  },
+  {
+    q: "Les fleurs épanouies finissent toujours par tomber. Mais elles refleurissent la saison suivante.",
+    a: "Rukia Kuchiki",
+    s: "Bleach"
+  }
+];
+
+// Index de citation actuellement affichée
+let currentQuoteIndex = 0;
+
+/*
+  Calcule la citation du jour :
+  Même citation pour tous les utilisateurs le même jour
+  Change automatiquement à minuit
+*/
+function getDayOfYear() {
+  const now   = new Date();
+  const start = new Date(now.getFullYear(), 0, 0);
+  const diff  = now - start;
+  return Math.floor(diff / 86400000);
+}
+
+function initDailyQuote() {
+  const today     = new Date().toDateString(); // ex: "Mon May 15 2026"
+  const stored    = localStorage.getItem('on_quote_date');
+  const storedIdx = parseInt(localStorage.getItem('on_quote_index') || '0');
+
+  if (stored === today) {
+    // Même jour → même citation
+    currentQuoteIndex = storedIdx;
+  } else {
+    // Nouveau jour → nouvelle citation calculée
+    currentQuoteIndex = getDayOfYear() % QUOTES.length;
+    localStorage.setItem('on_quote_date',  today);
+    localStorage.setItem('on_quote_index', currentQuoteIndex);
+  }
+
+  displayQuote(currentQuoteIndex);
+}
+
+function displayQuote(index) {
+  const q = QUOTES[index];
+  if (!q) return;
+
+  // Calcul du jour de l'année pour l'affichage
+  const day = getDayOfYear();
+  const dateStr = new Date().toLocaleDateString('fr-FR', {
+    weekday:'long', day:'numeric', month:'long'
+  });
+
+  // Mise à jour section grande citation
+  document.getElementById('qcbDay').textContent    = `Jour ${day} · ${dateStr}`;
+  document.getElementById('qcbQuote').textContent  = `"${q.q}"`;
+  document.getElementById('qcbAuthor').textContent = `— ${q.a}`;
+  document.getElementById('qcbSeries').textContent = q.s;
+
+  // Mise à jour barre du bas
+  document.getElementById('quoteBarText').innerHTML =
+    `<em>${q.q}</em>`;
+  document.getElementById('quoteBarAuthor').textContent = `— ${q.a}`;
+}
+
+// Boutons navigation manuelle
+function nextQuote() {
+  currentQuoteIndex = (currentQuoteIndex + 1) % QUOTES.length;
+  displayQuote(currentQuoteIndex);
+}
+function prevQuote() {
+  currentQuoteIndex = (currentQuoteIndex - 1 + QUOTES.length) % QUOTES.length;
+  displayQuote(currentQuoteIndex);
+}
+
+// Initialisation au chargement
+initDailyQuote();
+
+
+/* ──────────────────────────────────────────
+   4. NEWSLETTER
+   
+   Actuellement : sauvegarde en localStorage
+   (démo sans backend).
+   
+   Pour un vrai envoi d'emails, remplace le
+   contenu de handleNewsletter() par l'appel
+   à ton service (Mailchimp, EmailJS, Formspree).
+   
+   Voir les commentaires dans la section HTML.
+   ────────────────────────────────────────── */
+async function handleNewsletter() {
+  const emailInput = document.getElementById('nlEmail');
+  const email      = emailInput.value.trim();
+
+  // ── Efface le message précédent ──
+  hideFeedback();
+
+  // ── Cas 1 : champ vide ──
+  if (!email) {
+    showFeedback('error', '⚠️ Saisis ton adresse email avant de continuer.');
+    emailInput.focus();
+    return;
+  }
+
+  // ── Cas 2 : email mal écrit ──
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    showFeedback('error', '❌ Adresse email invalide — vérifie le @ et le .com');
+    emailInput.focus();
+    return;
+  }
+
+  // ── Cas 3 : déjà inscrit (vérif locale) ──
+  const subs = JSON.parse(localStorage.getItem('on_subs') || '[]');
+  if (subs.includes(email.toLowerCase())) {
+    showFeedback('info', '✅ Tu es déjà inscrit(e) avec cet email !');
+    return;
+  }
+
+  // ── Envoi en cours : désactive le bouton ──
+  const btn = document.querySelector('.nl-submit');
+  btn.disabled    = true;
+  btn.textContent = '⏳ Envoi en cours...';
+
+  // ── Envoi vers Formspree ──
+  try {
+    const response = await fetch('https://formspree.io/f/mwvygelp', {
+      method:  'POST',
+      body:    JSON.stringify({ email: email }),
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+    if (response.ok) {
+      // ── Cas 4 : succès ──
+      subs.push(email.toLowerCase());
+      localStorage.setItem('on_subs', JSON.stringify(subs));
+
+      const count = parseInt(document.getElementById('nlCount').textContent) + 1;
+      document.getElementById('nlCount').textContent = count;
+
+      showFeedback('success',
+        '🎌 Inscription réussie ! Tu vas bientôt recevoir les news OtakuNiamey dans ta boîte mail.');
+      emailInput.value = '';
+
+    } else {
+      // ── Cas 5 : erreur serveur Formspree ──
+      showFeedback('error', '⚠️ Erreur serveur. Réessaie dans quelques secondes.');
+    }
+
+  } catch (err) {
+    // ── Cas 6 : pas de connexion internet ──
+    showFeedback('error', '📡 Pas de connexion internet. Vérifie ton réseau et réessaie.');
+  }
+
+  // ── Réactive le bouton dans tous les cas ──
+  btn.disabled    = false;
+  btn.textContent = 'S\'inscrire ⚡';
+}
+
+// ── Affiche un message coloré sous le formulaire ──
+function showFeedback(type, msg) {
+  // Cherche ou crée la div de feedback
+  let el = document.getElementById('nlFeedback');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'nlFeedback';
+    document.getElementById('nlForm').after(el);
+  }
+
+  // Styles selon le type
+  const styles = {
+    success: 'background:rgba(0,255,229,.1); border:1px solid rgba(0,255,229,.4); color:#00ffe5;',
+    error:   'background:rgba(255,0,170,.1); border:1px solid rgba(255,0,170,.4); color:#ff00aa;',
+    info:    'background:rgba(139,43,226,.1);border:1px solid rgba(139,43,226,.4);color:#b06fff;'
+  };
+
+  el.style.cssText = `
+    display:block;
+    margin-top:.8rem;
+    padding:.75rem 1.1rem;
+    border-radius:6px;
+    font-size:.88rem;
+    font-weight:600;
+    text-align:center;
+    line-height:1.5;
+    ${styles[type] || styles.info}
+  `;
+  el.textContent = msg;
+
+  // Fait défiler jusqu'au message
+  el.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function hideFeedback() {
+  const el = document.getElementById('nlFeedback');
+  if (el) el.style.display = 'none';
+}
+
+// Soumettre avec Entrée
+document.getElementById('nlEmail').addEventListener('keypress', e => {
+  if (e.key === 'Enter') handleNewsletter();
+});
+
+
+/* ──────────────────────────────────────────
+   5. NAVIGATION
+   ────────────────────────────────────────── */
+
+// Scroll : ajoute la classe .scrolled à la nav
+window.addEventListener('scroll', () => {
+  document.getElementById('mainNav')
+    .classList.toggle('scrolled', window.scrollY > 40);
+}, { passive: true });
+
+// Hamburger
+document.getElementById('hamburger').addEventListener('click', () => {
+  document.getElementById('mobileNav').classList.toggle('open');
+});
+
+function closeMobile() {
+  document.getElementById('mobileNav').classList.remove('open');
+}
+
+// Ferme le menu mobile si on clique ailleurs
+document.addEventListener('click', e => {
+  const nav = document.getElementById('mobileNav');
+  const hb  = document.getElementById('hamburger');
+  if (nav.classList.contains('open') &&
+      !nav.contains(e.target) &&
+      !hb.contains(e.target)) {
+    nav.classList.remove('open');
+  }
+});
+
+</script>
+
+<!-- ════ FOOTER COPYRIGHT ════ -->
+<footer style="
+  background: #07070f;
+  border-top: 1px solid rgba(0,255,229,.12);
+  padding: 1.2rem 1.5rem;
+  text-align: center;
+  margin-bottom: 48px; /* espace pour la barre citation fixe en bas */
+">
+  <p style="
+    font-family: 'Orbitron', monospace;
+    font-size: .65rem;
+    font-weight: 600;
+    letter-spacing: .2em;
+    color: #7777aa;
+  ">
+    © 2026 <span style="color:#00ffe5; text-shadow:0 0 10px rgba(0,255,229,.5);">NI-JAP</span>
+    — Tous droits réservés —
+    Conçu par
+    <span style="color:#ff00aa; text-shadow:0 0 10px rgba(255,0,170,.5);">l'infini_dev</span>
+  </p>
+</footer>
+
+</body>
+</html>
