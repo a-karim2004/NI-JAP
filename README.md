@@ -73,3 +73,4 @@ Open `index.html` in a browser.
 
 For development, use a local static server or host it on a static website platform.
 
+![](ota.png)
