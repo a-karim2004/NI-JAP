@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
 <link rel="icon" type="image/x-icon" href="/nine.jpeg">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
 
 <!--
@@ -449,38 +450,43 @@
        1. Compte sur formspree.io
        2. Change action du formulaire : <form action="https://formspree.io/f/TONID">
        ════════════════════════════════════════ -->
-  <section id="section-newsletter">
-    <div class="container">
+  <!-- ════ SECTION NEWSLETTER ════ -->
+<section id="section-newsletter">
+  <div class="container">
+    <div class="newsletter-box">
 
-      <div class="newsletter-box">
+      <span class="nl-icon"><i class="fa-solid fa-envelope"></i></span>
 
-        <span class="nl-icon"><i class="fa-solid fa-envelope"></i></span>
+      <div class="nl-counter">
+        <span><i class="fa-solid fa-fire" style="color:red"></i></span>
+        <strong id="nlCount">247</strong>
+        <span>otakus déjà inscrits</span>
+      </div>
 
-        <div class="nl-counter">
-          <span><i class="fa-solid fa-fire" style="color:red"></i></span>
-          <strong id="nlCount">247</strong>
-          <span>otakus déjà inscrits</span>
-        </div>
+      <h2 class="nl-title">Reste dans la <span>boucle</span></h2>
 
-        <h2 class="nl-title">Reste dans la <span>boucle</span></h2>
+      <p class="nl-desc">
+        Reçois chaque semaine les dernières nouvelles sur la convention,
+        les activités, les guests invités et les surprises. Ne rate aucune info !
+      </p>
 
-        <p class="nl-desc">
-          Reçois chaque semaine les dernières nouvelles sur la convention,
-          les activités, les guests invités et les surprises. Ne rate aucune info !
-        </p>
+      <div class="nl-chips">
+        <span class="nl-chip nl-chip-cyan"><i class="fa-solid fa-bell" style="color:red"></i> Annonces event</span>
+        <span class="nl-chip nl-chip-magenta">🎭 Activités & Stands</span>
+        <span class="nl-chip nl-chip-violet"><i class="fa-solid fa-star" style="color:gold"></i> Guests spéciaux</span>
+      </div>
 
-        <!-- Chips décrivant ce que contient la newsletter -->
-        <div class="nl-chips">
-          <span class="nl-chip nl-chip-cyan"><i class="fa-solid fa-bell" style="color: rgb(228, 20, 20);"></i> Annonces event</span>
-          <span class="nl-chip nl-chip-magenta">🎭 Activités & Stands</span>
-          <span class="nl-chip nl-chip-violet"><i class="fa-solid fa-star" style="color: rgb(255, 212, 59);"></i> Guests spéciaux</span>
-        </div>
+      <!-- Formulaire -->
+      <form id="nlForm" onsubmit="return false;">
+        <div class="nl-form">
 
-        <!-- Formulaire -->
-        <div class="nl-form" id="nlForm">
+          <!-- Nom caché mais envoyé à EmailJS -->
+          <input type="hidden" id="nlName" name="user_name" value="Otaku NI-JAP">
+
           <input
             type="email"
             id="nlEmail"
+            name="user_email"
             class="nl-input"
             placeholder="ton.email@exemple.com"
             autocomplete="email"
@@ -490,18 +496,18 @@
             S'inscrire ⚡
           </button>
         </div>
+      </form>
 
-        <!-- Message retour -->
-        <div class="nl-feedback" id="nlFeedback"></div>
+      <!-- Message retour -->
+      <div id="nlFeedback"></div>
 
-        <p class="nl-privacy">
-          🔒 Aucun spam. Désinscription en un clic. Données conservées au Niger.
-        </p>
-
-      </div>
+      <p class="nl-privacy">
+        🔒 Aucun spam. Désinscription en un clic. Données conservées au Niger.
+      </p>
 
     </div>
-  </section>
+  </div>
+</section>
   <!-- ════ SECTION TICKET ════ -->
 <section id="section-ticket" style="padding:5rem 0; background:var(--bg-deep);">
   <div class="container">
@@ -959,92 +965,105 @@ initDailyQuote();
    
    Voir les commentaires dans la section HTML.
    ────────────────────────────────────────── */
+          /* ════════════════════════════════════════
+   EMAILJS — Config
+   ════════════════════════════════════════ */
+const EJS_SERVICE_ID       = 'service_uuxqbjm';
+const EJS_TEMPLATE_NOTIF   = 'template_6qkl71d';  // email pour TOI
+const EJS_TEMPLATE_WELCOME = 'template_bdnx4su';  // email de bienvenue pour l'inscrit
+const GOOGLE_SHEET_URL     = 'https://script.google.com/macros/s/AKfycbx6dfK6zRhLVrkelxbGsnOJ979EsbxH5O1un9Q7EnktxGG5SuFCLRg57o_j1zSIdsAHLA/exec';
+
+// Initialise EmailJS
+emailjs.init('FRhGOWxmahppENn5d');
+
 async function handleNewsletter() {
   const emailInput = document.getElementById('nlEmail');
   const email      = emailInput.value.trim();
 
-  // ── Efface le message précédent ──
   hideFeedback();
 
-  // ── Cas 1 : champ vide ──
+  // ── Champ vide ──
   if (!email) {
     showFeedback('error', '⚠️ Saisis ton adresse email avant de continuer.');
     emailInput.focus();
     return;
   }
 
-  // ── Cas 2 : email mal écrit ──
+  // ── Email invalide ──
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
-    showFeedback('error', '❌ Adresse email invalide — vérifie le @ et le .com');
+    showFeedback('error', '❌ Email invalide — vérifie le @ et le .com');
     emailInput.focus();
     return;
   }
 
-  // ── Cas 3 : déjà inscrit (vérif locale) ──
+  // ── Déjà inscrit ──
   const subs = JSON.parse(localStorage.getItem('on_subs') || '[]');
   if (subs.includes(email.toLowerCase())) {
     showFeedback('info', '✅ Tu es déjà inscrit(e) avec cet email !');
     return;
   }
 
-  // ── Envoi en cours : désactive le bouton ──
+  // ── Bouton en cours ──
   const btn = document.querySelector('.nl-submit');
   btn.disabled    = true;
   btn.textContent = '⏳ Envoi en cours...';
 
-  // ── Envoi vers Formspree ──
+  // Met le nom dans le champ caché
+  document.getElementById('nlName').value = email.split('@')[0];
+
+  const form = document.getElementById('nlForm');
+
   try {
-    const response = await fetch('https://formspree.io/f/mwvygelp', {
-      method:  'POST',
-      body:    JSON.stringify({ email: email }),
-      headers: { 'Content-Type': 'application/json' }
+
+    // ── 1. Notif pour toi ──
+    await emailjs.sendForm(EJS_SERVICE_ID, EJS_TEMPLATE_NOTIF, form);
+
+    // ── 2. Email de bienvenue pour l'inscrit ──
+    await emailjs.sendForm(EJS_SERVICE_ID, EJS_TEMPLATE_WELCOME, form);
+
+    // ── 3. Sauvegarde dans Google Sheets ──
+    const formData = new FormData();
+    formData.append('nom',   email.split('@')[0]);
+    formData.append('email', email);
+    await fetch(GOOGLE_SHEET_URL, {
+      method: 'POST',
+      body:   formData,
+      mode:   'no-cors'
     });
 
-    if (response.ok) {
-      // ── Cas 4 : succès ──
-      subs.push(email.toLowerCase());
-      localStorage.setItem('on_subs', JSON.stringify(subs));
+    // ── Succès ──
+    subs.push(email.toLowerCase());
+    localStorage.setItem('on_subs', JSON.stringify(subs));
 
-      const count = parseInt(document.getElementById('nlCount').textContent) + 1;
-      document.getElementById('nlCount').textContent = count;
+    const count = parseInt(document.getElementById('nlCount').textContent) + 1;
+    document.getElementById('nlCount').textContent = count;
 
-      showFeedback('success',
-        '🎌 Inscription réussie ! Tu vas bientôt recevoir les news OtakuNiamey dans ta boîte mail.');
-      emailInput.value = '';
-
-    } else {
-      // ── Cas 5 : erreur serveur Formspree ──
-      showFeedback('error', '⚠️ Erreur serveur. Réessaie dans quelques secondes.');
-    }
+    showFeedback('success',
+      '🎌 Inscription réussie ! Vérifie ta boîte mail, un email de bienvenue t\'a été envoyé.');
+    emailInput.value = '';
 
   } catch (err) {
-    // ── Cas 6 : pas de connexion internet ──
-    showFeedback('error', '📡 Pas de connexion internet. Vérifie ton réseau et réessaie.');
+    console.error('EmailJS erreur:', err);
+    showFeedback('error', '⚠️ Erreur d\'envoi. Vérifie ta connexion et réessaie.');
   }
 
-  // ── Réactive le bouton dans tous les cas ──
   btn.disabled    = false;
-  btn.textContent = 'S\'inscrire ⚡';
+  btn.textContent = "S'inscrire ⚡";
 }
 
-// ── Affiche un message coloré sous le formulaire ──
 function showFeedback(type, msg) {
-  // Cherche ou crée la div de feedback
   let el = document.getElementById('nlFeedback');
   if (!el) {
     el = document.createElement('div');
     el.id = 'nlFeedback';
     document.getElementById('nlForm').after(el);
   }
-
-  // Styles selon le type
   const styles = {
-    success: 'background:rgba(0,255,229,.1); border:1px solid rgba(0,255,229,.4); color:#00ffe5;',
-    error:   'background:rgba(255,0,170,.1); border:1px solid rgba(255,0,170,.4); color:#ff00aa;',
+    success: 'background:rgba(0,255,229,.1);border:1px solid rgba(0,255,229,.4);color:#00ffe5;',
+    error:   'background:rgba(255,0,170,.1);border:1px solid rgba(255,0,170,.4);color:#ff00aa;',
     info:    'background:rgba(139,43,226,.1);border:1px solid rgba(139,43,226,.4);color:#b06fff;'
   };
-
   el.style.cssText = `
     display:block;
     margin-top:.8rem;
@@ -1057,8 +1076,6 @@ function showFeedback(type, msg) {
     ${styles[type] || styles.info}
   `;
   el.textContent = msg;
-
-  // Fait défiler jusqu'au message
   el.scrollIntoView({ behavior:'smooth', block:'nearest' });
 }
 
@@ -1067,11 +1084,9 @@ function hideFeedback() {
   if (el) el.style.display = 'none';
 }
 
-// Soumettre avec Entrée
 document.getElementById('nlEmail').addEventListener('keypress', e => {
   if (e.key === 'Enter') handleNewsletter();
 });
-
 
 /* ──────────────────────────────────────────
    5. NAVIGATION
