@@ -664,14 +664,67 @@ function updateCountdown() {
   const now  = new Date();
   const diff = EVENT_DATE - now; // millisecondes restantes
 
-  // Événement passé
-  if (diff <= 0) {
-    document.getElementById('countdownGrid').innerHTML =
-      '<div class="cd-finished">🎌 L\'événement a eu lieu ! Merci à tous !</div>';
+    // Événement passé
+    if (diff <= 0) {
+    document.getElementById('countdownGrid').innerHTML = `
+      <div style="text-align:center;">
+        <div style="
+          font-family:'Orbitron',monospace;
+          font-size:clamp(1.2rem,4vw,2rem);
+          font-weight:900;
+          color:var(--cyan);
+          text-shadow:var(--glow-cyan);
+          margin-bottom:1rem;
+          animation:blink 1s ease-in-out infinite;
+        ">🎌 C'EST MAINTENANT !</div>
+        <div style="
+          font-family:'Orbitron',monospace;
+          font-size:.85rem;
+          color:var(--magenta);
+          letter-spacing:.2em;
+          margin-bottom:1.5rem;
+        ">LA CONVENTION NI-JAP 2026 A COMMENCÉ !</div>
+        <a href="https://maps.app.goo.gl/9AE8ZfCehCFDhctk7"
+          target="_blank"
+          class="btn btn-primary">
+          📍 Rejoins-nous au CCN maintenant !
+        </a>
+      </div>
+    `;
     document.getElementById('daysOnly').textContent = '0';
     clearInterval(countdownInterval);
     return;
+    }
+
+
+
+      /* ── NOTIFICATION NAVIGATEUR ── */
+  function demanderNotification() {
+    if ('Notification' in window) {
+      Notification.requestPermission();
+    }
   }
+
+  function verifierEtNotifier() {
+    const now  = new Date();
+    const diff = EVENT_DATE - now;
+
+    /* Envoie la notif quand il reste moins de 1 minute */
+    if (diff > 0 && diff < 60000) {
+      if (Notification.permission === 'granted') {
+        new Notification('🎌 NINPON-NITE commence MAINTENANT  a partir de 15H!', {
+          body: 'La Convention Otaku de Niamey a commencé ! Rejoins-nous au CCN !',
+          icon: 'nine.jpeg'
+        });
+      }
+    }
+  }
+
+/* Demande la permission dès que la page charge */
+window.addEventListener('load', () => {
+  demanderNotification();
+  setInterval(verifierEtNotifier, 30000); /* vérifie toutes les 30 secondes */
+});
 
   // Calcul des unités
   const days    = Math.floor(diff / 86400000);
