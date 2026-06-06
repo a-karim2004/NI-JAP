@@ -4,27 +4,21 @@
    toutes les couleurs d'un seul coup
    ════════════════════════════════════════ */
 :root {
-  --bg-void:       #020209;
-  --bg-deep:       #07070f;
-  --bg-card:       #0c0c1c;
-  --bg-card2:      #10101f;
-
+  background: linear-gradient(#0A0A0A);
+  
   /* Neons principaux */
-  --cyan:    #00ffe5;
-  --blue:    #00b4ff;
+  --cyan:     #00FFFF;
+  --blue:    #FF00FF;
   --magenta: #ff00aa;
   --violet:  #8b2be2;
   --pink:    #ff4dff;
 
   /* Textes */
-  --text:    #eeeeff;
-  --muted:   #7777aa;
+  --text:    #ffffff;
+  --muted:   #ffff;
 
   /* Glows */
-  --glow-cyan:    0 0 18px rgba(0,255,229,.6), 0 0 50px rgba(0,255,229,.15);
-  --glow-blue:    0 0 18px rgba(0,180,255,.6), 0 0 50px rgba(0,180,255,.15);
-  --glow-magenta: 0 0 18px rgba(255,0,170,.6), 0 0 50px rgba(255,0,170,.15);
-  --glow-violet:  0 0 18px rgba(139,43,226,.6),0 0 50px rgba(139,43,226,.15);
+  
 
   /* ⬇️ MODIFIE LA DATE ICI AUSSI dans le JS (EVENT_DATE) */
 }
@@ -36,7 +30,7 @@
 html { scroll-behavior:smooth; font-size:16px; }
 
 body {
-  font-family:'Rajdhani', sans-serif;
+  font-family:'', sans-serif;
   background: var(--bg-void);
   color: var(--text);
   overflow-x: hidden;
@@ -49,8 +43,7 @@ body {
 ::-webkit-scrollbar-track { background:var(--bg-deep); }
 ::-webkit-scrollbar-thumb { background:var(--violet); border-radius:3px; }
 
-/* Sélection de texte */
-::selection { background:rgba(139,43,226,.4); color:white; }
+
 
 /* ════════════════════════════════════════
    NAVIGATION FIXE
@@ -65,11 +58,9 @@ nav {
   justify-content: space-between;
   padding: 0 1.5rem;
   /* On évite backdrop-filter sur mobile (trop lourd) */
-  background: rgba(2,2,9,.95);
-  border-bottom: 1px solid rgba(0,255,229,.12);
-  transition: border-color .3s;
+  
 }
-nav.scrolled { border-bottom-color: rgba(0,255,229,.35); }
+
 
 /* Logo */
 .logo {
@@ -118,8 +109,14 @@ nav.scrolled { border-bottom-color: rgba(0,255,229,.35); }
   gap:5px;
   cursor:pointer;
   padding:6px;
-  border:none;
-  background:none;
+  border:1px solid rgba(0,255,229,.3);
+  background: black;
+  border-radius:6px;
+  transition:all .3s;
+}
+.hamburger:hover {
+  background:linear-gradient(135deg, rgba(0,180,255,.4), rgba(139,43,226,.4));
+  border-color:rgba(0,255,229,.6);
 }
 .hamburger span {
   display:block;
@@ -134,7 +131,7 @@ nav.scrolled { border-bottom-color: rgba(0,255,229,.35); }
   display:none;
   position:fixed;
   inset:64px 0 0 0;
-  background:rgba(2,2,9,.98);
+  background:#000000;
   z-index:999;
   flex-direction:column;
   padding:1.5rem;
@@ -158,7 +155,7 @@ nav.scrolled { border-bottom-color: rgba(0,255,229,.35); }
 .mobile-nav a:hover {
   color:var(--cyan);
   border-color:rgba(0,255,229,.25);
-  background:rgba(0,255,229,.04);
+  background:rgba(0, 0, 0, 0.04);
 }
 
 /* ════════════════════════════════════════
@@ -240,20 +237,11 @@ section { width:100%; }
     radial-gradient(ellipse 70% 60% at 60% 40%, rgba(139,43,226,.18) 0%, transparent 60%),
     radial-gradient(ellipse 50% 70% at 20% 80%, rgba(255,0,170,.1) 0%, transparent 55%),
     radial-gradient(ellipse 60% 50% at 80% 10%, rgba(0,180,255,.1) 0%, transparent 55%),
-    linear-gradient(160deg, #020209 0%, #08081a 60%, #050511 100%);
+    linear-gradient(160deg, #276bc4 0%, #131314 60%, #3f3f44 100%);
 }
 
 /* Grille animée (désactivée sur mobile via @media) */
-.hero-grid {
-  position:absolute;
-  inset:0;
-  background-image:
-    linear-gradient(rgba(0,255,229,.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,255,229,.04) 1px, transparent 1px);
-  background-size:55px 55px;
-  animation:gridDrift 25s linear infinite;
-  will-change:background-position;
-}
+
 @keyframes gridDrift {
   from { background-position:0 0; }
   to   { background-position:55px 55px; }
