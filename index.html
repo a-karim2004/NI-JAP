@@ -166,31 +166,108 @@
     .auth-footer a {
       color:#00ffe5;
       text-decoration:none;
+
+      
     }
+    /* Rend le conteneur relatif pour positionner le bouton à l'intérieur */
+.password-container {
+  position: relative;
+  width: 100%;
+}
+
+/* Force l'input à laisser de la place à droite pour que le texte ne cache pas l'œil */
+.password-container .form-input {
+  padding-right: 2.8rem;
+}
+
+/* Style du bouton œil (transparent et centré verticalement) */
+.toggle-password-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+  user-select: none;
+}
+
+/* Effet survol pour rester pro */
+.toggle-password-btn:hover {
+  opacity: 1;
+}
+/* Style pour le lien mot de passe oublié */
+.forgot-password-link {
+  text-align: right;
+  margin-top: 0.5rem;
+}
+.forgot-password-link a {
+  color: #7777aa;
+  font-size: 0.8rem;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.forgot-password-link a:hover {
+  color: #00ffe5; /* Devient néon au survol */
+}
+
+/* Style pour la boîte d'assistance en bas du formulaire */
+.assistance-box {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.8rem;
+  color: #7777aa;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+.assistance-box a {
+  color: #00b4ff;
+  text-decoration: none;
+  font-weight: 600;
+}
+.assistance-box a:hover {
+  text-decoration: underline;
+  color: #00ffe5;
+}
+
   </style>
 </head>
 <body>
 
 <div class="auth-box">
   <div class="auth-logo">NI-JAP</div>
-  <div class="auth-sub">Platforme-PUB Anime Niamey 2026</div>
-
+    <div class="auth-sub">いらっしゃいませ</div>
+  <div class="auth-sub">Plateforme Culturelle Niger - Japon
+Rejoins le pont entre nos deux cultures</div>
+  
   <div class="auth-tabs">
     <button class="auth-tab active" onclick="switchTab('login')">Connexion</button>
     <button class="auth-tab" onclick="switchTab('register')">Inscription</button>
   </div>
 
   <div id="form-login">
-    <div class="form-group">
-      <label class="form-label">Email</label>
-      <input type="email" id="login-email" class="form-input" placeholder="ton@email.com">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Mot de passe</label>
-      <input type="password" id="login-password" class="form-input" placeholder="••••••••">
-    </div>
-    <button class="auth-btn" onclick="handleLogin()">Se connecter →</button>
+  <div class="form-group">
+    <label class="form-label">Email</label>
+    <input type="email" id="login-email" class="form-input" placeholder="ton@email.com">
   </div>
+  
+  <div class="form-group">
+    <label class="form-label">Mot de passe</label>
+    <div class="password-container">
+      <input type="password" id="login-password" class="form-input" placeholder="••••••••">
+        <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('login-password', this)">👁️</button>
+    </div>
+  </div>
+  
+  <button class="auth-btn" onclick="handleLogin()">Se connecter →</button>
+  
+  <div class="assistance-box">
+    Un problème ? <a href="https://wa.me/22798705609" target="_blank">Contactez l'assistance sur WhatsApp 💬</a>
+  </div>
+</div>
 
   <div id="form-register" style="display:none;">
     <div class="form-group">
@@ -202,8 +279,11 @@
       <input type="email" id="reg-email" class="form-input" placeholder="ton@email.com">
     </div>
     <div class="form-group">
-      <label class="form-label">Mot de passe</label>
-      <input type="password" id="reg-password" class="form-input" placeholder="Min. 6 caractères">
+      <label class="form-label">Créer votre Mot de passe</label>
+      <div class="password-container">
+        <input type="password" id="reg-password" class="form-input" placeholder="••••••••">
+        <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('reg-password', this)">👁️</button>
+      </div>
     </div>
     <div class="form-group">
       <label class="form-label">Ville</label>
@@ -268,7 +348,45 @@
     }
     btn.disabled = false; btn.textContent = 'Se connecter →';
   }
+  
 
+  function togglePasswordVisibility(inputId, button) {
+    const passwordInput = document.getElementById(inputId);
+    const toggleBtn = button || document.querySelector('.toggle-password-btn');
+
+    if (!passwordInput || !toggleBtn) return;
+
+    if (passwordInput.type === 'password') {
+      passwordInput.type = 'text';
+      toggleBtn.textContent = '👁️'; // Change l'icône pour montrer qu'on peut masquer
+    } else {
+      passwordInput.type = 'password';
+      toggleBtn.textContent = '🙈'; // Remet l'œil normal
+    }
+ }
+
+ async function handleForgotPassword() {
+  const email = document.getElementById('login-email').value.trim();
+  hideFb();
+
+  // On vérifie d'abord si l'utilisateur a écrit son adresse email
+  if (!email) {
+    showFb('error', '⚠️ Veuillez entrer votre adresse email dans le champ ci-dessus d\'abord.');
+    return;
+  }
+
+  // Appel de la fonction magique de Supabase
+  const { error } = await db.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin + '/reni.html', 
+    // ^ C'est la page vers laquelle l'utilisateur sera envoyé depuis son mail pour taper son nouveau mot de passe
+  });
+
+  if (error) {
+    showFb('error', '❌ Erreur : ' + error.message);
+  } else {
+    showFb('success', '📧 Email de réinitialisation envoyé ! Vérifie ta boîte de réception.');
+  }
+}
   // ── Inscription ──
   async function handleRegister() {
     const username = document.getElementById('reg-username').value.trim();
